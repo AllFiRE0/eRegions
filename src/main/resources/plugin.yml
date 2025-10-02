@@ -1,0 +1,105 @@
+name: eRegions
+version: 1.0.0
+main: com.allfire.eregions.ERegions
+api-version: 1.21
+author: AllF1RE
+description: Advanced region management plugin with command triggers and visual effects
+website: https://github.com/AllF1RE/eRegions
+
+depend: [WorldGuard, WorldEdit]
+softdepend: [PlaceholderAPI, Vault, LuckPerms, CMI, SelectionVisualizer, FastAsyncWorldEdit]
+
+commands:
+  eregion:
+    description: Main eRegions command
+    usage: /eregion <subcommand>
+    aliases: [ereg, erg]
+    permission: eregions.use
+
+permissions:
+  eregions.*:
+    description: All eRegions permissions
+    default: op
+    children:
+      eregions.use: true
+      eregions.admin: true
+      eregions.admin.flag: true
+      eregions.region.*: true
+      eregions.view: true
+      eregions.reload: true
+      eregions.help: true
+
+  eregions.use:
+    description: Basic eRegions usage
+    default: true
+
+  eregions.admin:
+    description: Administrative access to eRegions
+    default: op
+
+  eregions.admin.flag:
+    description: Admin flag management
+    default: op
+
+  eregions.view:
+    description: View region boundaries and effects
+    default: true
+
+  eregions.reload:
+    description: Reload eRegions configuration
+    default: op
+
+  eregions.help:
+    description: View help information
+    default: true
+
+  eregions.region.*:
+    description: All region management permissions
+    default: false
+    children:
+      eregions.region.create: true
+      eregions.region.remove: true
+      eregions.region.members: true
+      eregions.region.owner: true
+      eregions.region.flag: true
+      eregions.region.flags: true
+      eregions.region.move: true
+      eregions.region.size: true
+      eregions.region.view: true
+
+  eregions.region.create:
+    description: Create new regions
+    default: true
+
+  eregions.region.remove:
+    description: Remove regions
+    default: false
+
+  eregions.region.members:
+    description: Manage region members
+    default: false
+
+  eregions.region.owner:
+    description: Manage region owners
+    default: false
+
+  eregions.region.flag:
+    description: Manage region flags
+    default: false
+
+  eregions.region.flags:
+    description: View region flags
+    default: false
+
+  eregions.region.move:
+    description: Move regions
+    default: false
+
+  eregions.region.size:
+    description: Resize regions
+    default: false
+
+  eregions.region.view:
+    description: View region information
+    default: true
+
