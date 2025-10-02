@@ -230,31 +230,31 @@ messages:
   help-help:
     enabled: true
     message: "chat! &e/eregion help &7- Показать эту справку"
-  help-region-creation-header:
+  help-creation-title:
     enabled: true
     message: "chat! &6=== Процесс создания региона ==="
-  help-region-creation-step1:
+  help-creation-step1:
     enabled: true
     message: "chat! &71. Используйте &e/eregion create"
-  help-region-creation-step2:
+  help-creation-step2:
     enabled: true
     message: "chat! &72. Выберите две точки: &eSHIFT+ЛКМ &7и &eSHIFT+ПКМ"
-  help-region-creation-step3:
+  help-creation-step3:
     enabled: true
     message: "chat! &73. Напишите название региона в чат"
-  help-region-creation-step4:
+  help-creation-step4:
     enabled: true
     message: "chat! &74. Для отмены напишите &cотмена &7или используйте &e/eregion cancel"
-  help-region-management-header:
+  help-management-title:
     enabled: true
     message: "chat! &6=== Управление выделенной областью ==="
-  help-region-management-info:
+  help-management-intro:
     enabled: true
     message: "chat! &7После создания региона вы можете:"
-  help-region-management-move:
+  help-management-move:
     enabled: true
     message: "chat! &7- Перемещать: &e/eregion move +10 &7(на 10 блоков вперед)"
-  help-region-management-size:
+  help-management-size:
     enabled: true
     message: "chat! &7- Изменять размер: &e/eregion size up +5 &7(увеличить вверх на 5 блоков)"
   
@@ -316,78 +316,6 @@ messages:
   usage-command:
     enabled: true
     message: "chat! &eИспользование: {usage}"
-  
-  # Help messages
-  help-title:
-    enabled: true
-    message: "chat! &6=== eRegions - Справка по командам ==="
-  help-empty-line:
-    enabled: true
-    message: "chat! "
-  help-create:
-    enabled: true
-    message: "chat! &e/eregion create &7- Создать новый регион"
-  help-cancel:
-    enabled: true
-    message: "chat! &e/eregion cancel &7- Отменить создание региона"
-  help-remove:
-    enabled: true
-    message: "chat! &e/eregion remove <region> &7- Удалить регион"
-  help-member:
-    enabled: true
-    message: "chat! &e/eregion member <add/remove> <region> <player> &7- Управление участниками"
-  help-owner:
-    enabled: true
-    message: "chat! &e/eregion owner <add/remove> <region> <player> &7- Управление владельцами"
-  help-flag:
-    enabled: true
-    message: "chat! &e/eregion flag <add/remove> <region> <flag> &7- Управление флагами"
-  help-flags:
-    enabled: true
-    message: "chat! &e/eregion flags <region> &7- Показать все флаги региона"
-  help-move:
-    enabled: true
-    message: "chat! &e/eregion move <+/-distance> &7- Переместить выделенную область"
-  help-size:
-    enabled: true
-    message: "chat! &e/eregion size <up/down/face> <+/-distance> &7- Изменить размер выделенной области"
-  help-reload:
-    enabled: true
-    message: "chat! &e/eregion reload &7- Перезагрузить конфигурацию"
-  help-help:
-    enabled: true
-    message: "chat! &e/eregion help &7- Показать эту справку"
-  
-  # Region creation process
-  help-creation-title:
-    enabled: true
-    message: "chat! &6=== Процесс создания региона ==="
-  help-creation-step1:
-    enabled: true
-    message: "chat! &71. Используйте &e/eregion create"
-  help-creation-step2:
-    enabled: true
-    message: "chat! &72. Выберите две точки: &eSHIFT+ЛКМ &7и &eSHIFT+ПКМ"
-  help-creation-step3:
-    enabled: true
-    message: "chat! &73. Напишите название региона в чат"
-  help-creation-step4:
-    enabled: true
-    message: "chat! &74. Для отмены напишите &cотмена &7или используйте &e/eregion cancel"
-  
-  # Region management
-  help-management-title:
-    enabled: true
-    message: "chat! &6=== Управление выделенной областью ==="
-  help-management-intro:
-    enabled: true
-    message: "chat! &7После создания региона вы можете:"
-  help-management-move:
-    enabled: true
-    message: "chat! &7- Перемещать: &e/eregion move +10 &7(на 10 блоков вперед)"
-  help-management-size:
-    enabled: true
-    message: "chat! &7- Изменять размер: &e/eregion size up +5 &7(увеличить вверх на 5 блоков)"
   
   # Additional missing messages from commands
   usage-help-suggestion:
@@ -613,6 +541,29 @@ permissions:
   vault-enabled: true
   # Permission check delay in milliseconds
   permission-check-delay: 1000
+  # Admin permissions
+  eregions.admin.reload: true
+  eregions.admin: true
+  eregions.admin.flag: true
+  # Region permissions
+  eregions.region.create: true
+  eregions.region.remove: true
+  eregions.region.members: true
+  eregions.region.owner: true
+  eregions.region.move: true
+  eregions.region.size: true
+  # View permissions
+  eregions.view: true
+  # Help permissions
+  eregions.help: true
+  # SelectionVisualizer permissions
+  sv.*: true
+  sv.worldedit.use: true
+  sv.command.we: true
+  sv.command.wg: true
+  sv.command.toggle: true
+  sv.command.chunk: true
+  sv.command.grid: true
 ###################################################################################
 # PlaceholderAPI Integration
 placeholders:
@@ -677,29 +628,3 @@ logging:
 aliases:
   - "ereg"
   - "erg"
-###################################################################################
-# Permission Settings
-permissions:
-  # Admin permissions
-  eregions.admin.reload: true
-  eregions.admin: true
-  eregions.admin.flag: true
-  # Region permissions
-  eregions.region.create: true
-  eregions.region.remove: true
-  eregions.region.members: true
-  eregions.region.owner: true
-  eregions.region.move: true
-  eregions.region.size: true
-  # View permissions
-  eregions.view: true
-  # Help permissions
-  eregions.help: true
-  # SelectionVisualizer permissions
-  sv.*: true
-  sv.worldedit.use: true
-  sv.command.we: true
-  sv.command.wg: true
-  sv.command.toggle: true
-  sv.command.chunk: true
-  sv.command.grid: true
