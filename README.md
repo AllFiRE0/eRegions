@@ -72,20 +72,22 @@
 - `eregions.*` - Все права eRegions *(по умолчанию: op)*
 - `eregions.use` - Базовое использование eRegions *(по умолчанию: true)*
 - `eregions.admin` - Админский доступ к eRegions *(по умолчанию: op)*
-- `eregions.admin.reload` - Перезагрузка конфигурации eRegions *(по умолчанию: true)*
-- `eregions.admin.flag` - Админское управление флагами с группами *(по умолчанию: true)*
+- `eregions.admin.flag` - Админское управление флагами с группами *(по умолчанию: op)*
 - `eregions.view` - Просмотр границ регионов и эффектов *(по умолчанию: true)*
+- `eregions.reload` - Перезагрузка конфигурации eRegions *(по умолчанию: op)*
 - `eregions.help` - Просмотр справочной информации *(по умолчанию: true)*
 
 ### Права управления регионами
 - `eregions.region.*` - Все права управления регионами *(по умолчанию: false)*
 - `eregions.region.create` - Создание новых регионов *(по умолчанию: true)*
-- `eregions.region.remove` - Удаление регионов *(по умолчанию: true)*
-- `eregions.region.members` - Управление участниками регионов *(по умолчанию: true)*
-- `eregions.region.owner` - Управление владельцами регионов *(по умолчанию: true)*
-- `eregions.region.flag` - Управление флагами регионов *(по умолчанию: true)*
-- `eregions.region.move` - Перемещение регионов *(по умолчанию: true)*
-- `eregions.region.size` - Изменение размера регионов *(по умолчанию: true)*
+- `eregions.region.remove` - Удаление регионов *(по умолчанию: false)*
+- `eregions.region.members` - Управление участниками регионов *(по умолчанию: false)*
+- `eregions.region.owner` - Управление владельцами регионов *(по умолчанию: false)*
+- `eregions.region.flag` - Управление флагами регионов *(по умолчанию: false)*
+- `eregions.region.flags` - Просмотр флагов региона *(по умолчанию: false)*
+- `eregions.region.move` - Перемещение регионов *(по умолчанию: false)*
+- `eregions.region.size` - Изменение размера регионов *(по умолчанию: false)*
+- `eregions.region.view` - Просмотр информации о регионе *(по умолчанию: true)*
 
 ---
 
