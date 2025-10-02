@@ -1,0 +1,630 @@
+# eRegions Configuration
+# Advanced region management plugin with command triggers and visual effects
+# Actions: title! subtitle! actionbar! chat! (use ; for duration: title;5! message)
+# Command actions: asPlayer! asConsole!
+
+# Plugin Settings
+settings:
+  # Maximum selection distance in blocks
+  max-selection-distance: 1000
+  # Delay between command executions in milliseconds
+  command-delay: 100
+  # Delay between messages in milliseconds
+  message-delay: 50
+  # Enable debug mode (shows detailed logs for all operations)
+  debug: false
+  # Enable region boundary detection
+  enable-boundary-detection: true
+  # Boundary detection distance in blocks
+  boundary-detection-distance: 2.0
+###################################################################################
+# Message Settings
+messages:
+  # Selection messages
+  selection-start:
+    enabled: true
+    message: "actionbar! Выберите две точки региона"
+  selection-instructions:
+    enabled: true
+    message: "chat! &7Используйте &6SHIFT &7+ &eЛ&6КМ &7для выбора точек \n&7Точки можно выбрать на дистанции!"
+  selection-cancel:
+    enabled: true
+    message: "chat! &eИспользуйте /eregion cancel для отмены"
+  first-point-selected:
+    enabled: true
+    message: "actionbar! Первая точка выбрана"
+  second-point-selected:
+    enabled: true
+    message: "actionbar! Вторая точка выбрана"
+  selection-completed:
+    enabled: true
+    message: "chat! Пожалуйста, укажите название нового региона\nв чат"
+  region-name-prompt:
+    enabled: true
+    message: "chat! Введите название региона:"
+  region-created:
+    enabled: true
+    message: "title! &aРегион создан успешно!"
+  region-creation-cancelled:
+    enabled: true
+    message: "actionbar! Создание региона отменено"
+  
+  # Command error messages
+  player-only-command:
+    enabled: true
+    message: "chat! &cЭта команда может быть выполнена только игроком!"
+  active-selection-exists:
+    enabled: true
+    message: "chat! &cУ вас уже есть активное создание региона! Завершите его или отмените командой /eregion cancel"
+  selection-start-error:
+    enabled: true
+    message: "chat! &cОшибка при запуске выделения!"
+  invalid-direction:
+    enabled: true
+    message: "chat! &cНаправление должно быть &eup&c, &edown &cили &eface&c!"
+  invalid-distance-format:
+    enabled: true
+    message: "chat! &cНеверный формат расстояния! Используйте &e+10 &cили &e-5&c!"
+  no-selection:
+    enabled: true
+    message: "chat! &cУ вас нет завершенного выделения! Сначала выделите область."
+  invalid-action:
+    enabled: true
+    message: "chat! &cДействие должно быть &eadd &cили &eremove&c!"
+  player-not-found:
+    enabled: true
+    message: "chat! &cИгрок &e{player_name} &cне найден!"
+  region-not-found:
+    enabled: true
+    message: "chat! &cРегион &e{region_name} &cне найден!"
+  region-not-found-world:
+    enabled: true
+    message: "chat! &cРегион &e{region_name} &cне найден в мире &e{world_name}&c!"
+  not-region-owner:
+    enabled: true
+    message: "chat! &cВы не являетесь владельцем региона &e{region_name}&c!"
+  no-flag-permission:
+    enabled: true
+    message: "chat! &cУ вас нет прав для управления флагом &e{flag_name}&c!"
+  invalid-group:
+    enabled: true
+    message: "chat! &cНеверная группа: &e{group}&c. Доступные: &e{valid_groups}"
+  unknown-admin-command:
+    enabled: true
+    message: "chat! &cНеизвестная админская команда: &e{command}"
+  available-admin-commands:
+    enabled: true
+    message: "chat! &cДоступные команды: &e{commands}"
+  no-admin-permission:
+    enabled: true
+    message: "chat! &cУ вас нет прав для выполнения команды: &e{command}"
+  too-many-arguments:
+    enabled: true
+    message: "chat! &cСлишком много аргументов! Использование: &e{usage}"
+  specify-flag-name:
+    enabled: true
+    message: "chat! &cУкажите название флага! Использование: &e{usage}"
+  
+  # Success messages
+  region-removed:
+    enabled: true
+    message: "subtitle! Регион удален!"
+  region-removed-success:
+    enabled: true
+    message: "chat! &aРегион &e{region_name} &aуспешно удален!"
+  member-added:
+    enabled: true
+    message: "chat! &aИгрок добавлен в регион!"
+  member-added-success:
+    enabled: true
+    message: "chat! &aИгрок &e{player_name} &aстал участником региона &e{region_name}&a!"
+  member-removed:
+    enabled: true
+    message: "chat! &aИгрок удален из региона!"
+  member-removed-success:
+    enabled: true
+    message: "chat! &aИгрок &e{player_name} &aбольше не участник региона &e{region_name}&a!"
+  owner-added-success:
+    enabled: true
+    message: "chat! &aИгрок &e{player_name} &aстал владельцем региона &e{region_name}&a!"
+  owner-removed-success:
+    enabled: true
+    message: "chat! &aИгрок &e{player_name} &aбольше не владелец региона &e{region_name}&a!"
+  flag-added-success:
+    enabled: true
+    message: "chat! &aФлаг &e{flag_name} &aдобавлен в регион &e{region_name}&a!"
+  flag-removed-success:
+    enabled: true
+    message: "chat! &aФлаг &e{flag_name} &aудален из региона &e{region_name}&a!"
+  admin-flag-set-success:
+    enabled: true
+    message: "chat! &aФлаг &e{flag_name} &aустановлен в значение &e{value} &aдля групп &e{groups} &aв регионе &e{region_name}&a!"
+  region-moved-success:
+    enabled: true
+    message: "chat! &aВыделенная область перемещена на &e{distance} &aблоков!"
+  region-resized-success:
+    enabled: true
+    message: "chat! &aРазмер выделенной области изменен на &e{distance} &aблоков в направлении &e{direction}&a!"
+  
+  # Error operation messages
+  region-remove-failed:
+    enabled: true
+    message: "chat! &cНе удалось удалить регион &e{region_name}&c!"
+  region-remove-error:
+    enabled: true
+    message: "chat! &cПроизошла ошибка при удалении региона!"
+  member-add-failed:
+    enabled: true
+    message: "chat! &cНе удалось добавить участника в регион!"
+  member-remove-failed:
+    enabled: true
+    message: "chat! &cНе удалось удалить участника из региона!"
+  member-operation-error:
+    enabled: true
+    message: "chat! &cПроизошла ошибка при управлении участниками!"
+  owner-add-failed:
+    enabled: true
+    message: "chat! &cНе удалось добавить владельца в регион!"
+  owner-remove-failed:
+    enabled: true
+    message: "chat! &cНе удалось удалить владельца из региона!"
+  owner-operation-error:
+    enabled: true
+    message: "chat! &cПроизошла ошибка при управлении владельцами!"
+  flag-add-failed:
+    enabled: true
+    message: "chat! &cНе удалось добавить флаг в регион!"
+  flag-remove-failed:
+    enabled: true
+    message: "chat! &cНе удалось удалить флаг из региона!"
+  flag-operation-error:
+    enabled: true
+    message: "chat! &cПроизошла ошибка при управлении флагами!"
+  admin-flag-set-error:
+    enabled: true
+    message: "chat! &cОшибка при установке флага!"
+  region-move-error:
+    enabled: true
+    message: "chat! &cПроизошла ошибка при перемещении выделения!"
+  region-resize-error:
+    enabled: true
+    message: "chat! &cПроизошла ошибка при изменении размера выделения!"
+  
+  # Help messages
+  help-header:
+    enabled: true
+    message: "chat! &6=== eRegions - Справка по командам ==="
+  help-empty-line:
+    enabled: true
+    message: "chat! "
+  help-create:
+    enabled: true
+    message: "chat! &e/eregion create &7- Создать новый регион"
+  help-cancel:
+    enabled: true
+    message: "chat! &e/eregion cancel &7- Отменить создание региона"
+  help-remove:
+    enabled: true
+    message: "chat! &e/eregion remove <region> &7- Удалить регион"
+  help-member:
+    enabled: true
+    message: "chat! &e/eregion member <add/remove> <region> <player> &7- Управление участниками"
+  help-owner:
+    enabled: true
+    message: "chat! &e/eregion owner <add/remove> <region> <player> &7- Управление владельцами"
+  help-flag:
+    enabled: true
+    message: "chat! &e/eregion flag <add/remove> <region> <flag> &7- Управление флагами"
+  help-flags:
+    enabled: true
+    message: "chat! &e/eregion flags <region> &7- Показать все флаги региона"
+  help-move:
+    enabled: true
+    message: "chat! &e/eregion move <+/-distance> &7- Переместить выделенную область"
+  help-size:
+    enabled: true
+    message: "chat! &e/eregion size <up/down/face> <+/-distance> &7- Изменить размер выделенной области"
+  help-reload:
+    enabled: true
+    message: "chat! &e/eregion reload &7- Перезагрузить конфигурацию"
+  help-help:
+    enabled: true
+    message: "chat! &e/eregion help &7- Показать эту справку"
+  help-creation-title:
+    enabled: true
+    message: "chat! &6=== Процесс создания региона ==="
+  help-creation-step1:
+    enabled: true
+    message: "chat! &71. Используйте &e/eregion create"
+  help-creation-step2:
+    enabled: true
+    message: "chat! &72. Выберите две точки: &eSHIFT+ЛКМ &7и &eSHIFT+ПКМ"
+  help-creation-step3:
+    enabled: true
+    message: "chat! &73. Напишите название региона в чат"
+  help-creation-step4:
+    enabled: true
+    message: "chat! &74. Для отмены напишите &cотмена &7или используйте &e/eregion cancel"
+  help-management-title:
+    enabled: true
+    message: "chat! &6=== Управление выделенной областью ==="
+  help-management-intro:
+    enabled: true
+    message: "chat! &7После создания региона вы можете:"
+  help-management-move:
+    enabled: true
+    message: "chat! &7- Перемещать: &e/eregion move +10 &7(на 10 блоков вперед)"
+  help-management-size:
+    enabled: true
+    message: "chat! &7- Изменять размер: &e/eregion size up +5 &7(увеличить вверх на 5 блоков)"
+  
+  # Usage messages
+  usage-help:
+    enabled: true
+    message: "chat! &eИспользуйте /eregion help для получения справки"
+  usage-admin:
+    enabled: true
+    message: "chat! Использование: &e{usage}"
+  usage-flags:
+    enabled: true
+    message: "chat! &cИспользование: &e/eregion flags <region_name>"
+  unknown-subcommand:
+    enabled: true
+    message: "chat! &cНеизвестная подкоманда: &e{subcommand}"
+  no-permission:
+    enabled: true
+    message: "chat! &cУ вас нет прав для выполнения этой команды!"
+  
+  # Additional command messages
+  player-only-available:
+    enabled: true
+    message: "chat! &cЭта команда доступна только игрокам!"
+  no-active-selection:
+    enabled: true
+    message: "chat! &cУ вас нет активного процесса создания региона для отмены!"
+  region-cancelled:
+    enabled: true
+    message: "chat! &aСоздание региона отменено!"
+  config-reloaded:
+    enabled: true
+    message: "chat! &aКонфигурация плагина успешно перезагружена!"
+  config-reload-error:
+    enabled: true
+    message: "chat! &cПроизошла ошибка при перезагрузке конфигурации!"
+  not-region-owner-simple:
+    enabled: true
+    message: "chat! &cВы не владеете регионом &e{region_name}&c!"
+  region-no-flags:
+    enabled: true
+    message: "chat! &aУ региона &e{region_name} &aнет флагов."
+  
+  # Owner messages
+  owner-added:
+    enabled: true
+    message: "chat! &aВладелец добавлен в регион!"
+  owner-removed:
+    enabled: true
+    message: "chat! &aВладелец удален из региона!"
+  flag-added:
+    enabled: true
+    message: "chat! &aФлаг добавлен в регион!"
+  flag-removed:
+    enabled: true
+    message: "chat! &aФлаг удален из региона!"
+  
+  # Usage messages
+  usage-command:
+    enabled: true
+    message: "chat! &eИспользование: {usage}"
+  
+  # Additional missing messages from commands
+  usage-help-suggestion:
+    enabled: true
+    message: "chat! &eИспользуйте /eregion help для получения справки"
+  unknown-subcommand-error:
+    enabled: true
+    message: "chat! &cНеизвестная подкоманда: &e{subcommand}"
+  no-permission-error:
+    enabled: true
+    message: "chat! &cУ вас нет прав для выполнения этой команды!"
+  player-only-available-simple:
+    enabled: true
+    message: "chat! &cЭта команда доступна только игрокам!"
+  
+  # Region creation messages
+  region-creation-cancelled-chat:
+    enabled: true
+    message: "chat! &cСоздание региона отменено!"
+  region-name-empty:
+    enabled: true
+    message: "chat! &cНазвание региона не может быть пустым!"
+  region-name-too-long:
+    enabled: true
+    message: "chat! &cНазвание региона не может быть длиннее 32 символов!"
+  region-name-invalid-chars:
+    enabled: true
+    message: "chat! &cНазвание региона может содержать только буквы, цифры, дефисы и подчеркивания!"
+  region-created-success:
+    enabled: true
+    message: "chat! &aРегион &e{region_name} &aуспешно создан!"
+  region-overlapping:
+    enabled: true
+    message: "chat! &cВыделенная область пересекается с существующими регионами: &e{overlapping_regions}&c!"
+  region-creation-failed:
+    enabled: true
+    message: "chat! &cОшибка при создании региона &e{region_name}&c!"
+  
+  # Additional missing messages from PlayerChatListener
+  region-creation-cancelled-direct:
+    enabled: true
+    message: "chat! &cСоздание региона отменено!"
+  region-created-success-direct:
+    enabled: true
+    message: "chat! &aРегион &e{region_name} &aуспешно создан!"
+  region-overlapping-direct:
+    enabled: true
+    message: "chat! &cВыделенная область пересекается с существующими регионами: &e{overlapping_regions}&c!"
+  region-creation-failed-direct:
+    enabled: true
+    message: "chat! &cОшибка при создании региона &e{region_name}&c!"
+  
+  region-moved:
+    enabled: true
+    message: "subtitle! Регион перемещен!"
+  region-resized:
+    enabled: true
+    message: "subtitle! Размер региона изменен!"
+    # Examples with duration:
+    # message: "title;5! Заголовок на 5 секунд"
+    # message: "subtitle;3! Подзаголовок на 3 секунды"
+    # message: "actionbar;10! Action bar на 10 секунд"
+  config-reloaded:
+    enabled: true
+    message: "chat! &aКонфигурация перезагружена!"
+###################################################################################
+# Command Triggers
+command-triggers:
+  # Region creation triggers
+  region-creation:
+    enabled: true
+    commands:
+      - "asPlayer! svis we"
+      - "chat! {player_name} &aВыделите область для создания региона!"
+  # Region selection started
+  selection-start:
+    enabled: true
+    commands:
+      - "asPlayer! svis we"
+      - "actionbar! Выберите две точки региона"
+  # First point selected
+  first-point-selected:
+    enabled: true
+    commands:
+      - "asPlayer! svis we"
+      - "actionbar! Первая точка выбрана"
+  # Second point selected
+  second-point-selected:
+    enabled: true
+    commands:
+      - "asPlayer! svis we"
+      - "actionbar! Вторая точка выбрана"
+  # Region selection completed
+  selection-completed:
+    enabled: true
+    commands:
+      - "asPlayer! svis we"
+      - "actionbar! {#00FF00}Вы выделили область"
+      - "chat! {#00FF00}Напишите название вашего региона\n{#00FF00}Пример для названия региона Region01\n&cВведите &fотмена &cчтобы отменить создание региона."
+  # Region created successfully
+  region-created:
+    enabled: true
+    commands:
+      - "asPlayer! svis wg {region_name}"
+      #- "asConsole! money give {player_name} 1000"
+      - "chat! &aРегион &e{region_name} &aсоздан игроком &e{player_name}&a!"
+  # Region removed
+  region-removed:
+    enabled: true
+    commands:
+      - "chat! &cРегион &e{region_name} &cудален игроком &e{player_name}&c!"
+  # Member added to region
+  member-added:
+    enabled: true
+    commands:
+      - "chat! &aИгрок &e{target_player} &aдобавлен в регион &e{region_name}&a!"
+  # Member removed from region
+  member-removed:
+    enabled: true
+    commands:
+      - "chat! &cИгрок &e{target_player} &cудален из региона &e{region_name}&c!"
+  # Owner added to region
+  owner-added:
+    enabled: true
+    commands:
+      - "chat! &aИгрок &e{target_player} &aстал владельцем региона &e{region_name}&a!"
+  # Owner removed from region
+  owner-removed:
+    enabled: true
+    commands:
+      - "chat! &cИгрок &e{target_player} &cбольше не владелец региона &e{region_name}&c!"
+  # Flag added to region
+  flag-added:
+    enabled: true
+    commands:
+      - "chat! &aФлаг &e{flag_name} &aдобавлен в регион &e{region_name}&a!"
+  # Flag removed from region
+  flag-removed:
+    enabled: true
+    commands:
+      - "chat! &cФлаг &e{flag_name} &cудален из региона &e{region_name}&c!"
+  # Region moved
+  region-moved:
+    enabled: true
+    commands:
+      - "chat! &aВыделенная область перемещена на новые координаты: &e{point_1} &aи &e{point_2}&a!"
+  # Region resized
+  region-resized:
+    enabled: true
+    commands:
+      - "chat! &aВыделенная область изменена на новые координаты: &e{point_1} &aи &e{point_2}&a!"
+###################################################################################
+# Boundary Detection Triggers
+boundary-triggers:
+  # Player approaching region boundary from outside
+  boundary-enter:
+    enabled: true
+    distance: 5.0
+    cooldown: 3.0  # Cooldown in seconds before triggering again
+    commands:
+      - "asPlayer! svis wg {region_name}"
+      - "chat! &7Игрок &e{player_name} &7подошел к границе региона &e{region_name}&7!"
+  # Player approaching region boundary from inside
+  boundary-exit:
+    enabled: true
+    distance: 5.0
+    cooldown: 3.0  # Cooldown in seconds before triggering again
+    commands:
+      - "asPlayer! svis wg {region_name}"
+      - "chat! &7Игрок &e{player_name} &7приблизился к границе региона &e{region_name}&7 изнутри!"
+###################################################################################
+# WorldEdit Integration
+worldedit:
+  # Enable WorldEdit integration
+  enabled: true
+  # Use FastAsyncWorldEdit if available
+  use-fawe: true
+  # Selection visualization settings
+  selection-visualization:
+    enabled: true
+    particle-type: "REDSTONE"
+    particle-count: 100
+    particle-offset: 0.1
+###################################################################################
+# WorldGuard Integration
+worldguard:
+  # Enable WorldGuard integration
+  enabled: true
+  # Auto-create regions in WorldGuard
+  auto-create-regions: true
+  # Default region priority
+  default-priority: 0
+  # Default region flags
+  default-flags:
+    - "pvp=deny"
+    - "mob-damage=deny"
+    - "creeper-explosion=deny"
+  # Message for all flags list
+  list-flags:
+    - "chat! &2Флаги региона &7{region_flags}"
+  # Message for last add/remove flag
+  flag-changed:
+    - "chat! &aФлаг &f{region_flag}&a=&7{state_flag}"
+###################################################################################
+# Economy Integration
+economy:
+  # Enable economy integration
+  enabled: false
+  # Cost to create a region
+  region-creation-cost: 1000
+  # Cost to remove a region
+  region-removal-cost: 500
+  # Cost to resize a region
+  region-resize-cost: 100
+  # Cost to move a region
+  region-move-cost: 200
+###################################################################################
+# Permission Integration
+permissions:
+  # Enable LuckPerms integration
+  luckperms-enabled: true
+  # Enable Vault integration
+  vault-enabled: true
+  # Permission check delay in milliseconds
+  permission-check-delay: 1000
+  # Admin permissions
+  eregions.admin.reload: true
+  eregions.admin: true
+  eregions.admin.flag: true
+  # Region permissions
+  eregions.region.create: true
+  eregions.region.remove: true
+  eregions.region.members: true
+  eregions.region.owner: true
+  eregions.region.move: true
+  eregions.region.size: true
+  # View permissions
+  eregions.view: true
+  # Help permissions
+  eregions.help: true
+  # SelectionVisualizer permissions
+  sv.*: true
+  sv.worldedit.use: true
+  sv.command.we: true
+  sv.command.wg: true
+  sv.command.toggle: true
+  sv.command.chunk: true
+  sv.command.grid: true
+###################################################################################
+# PlaceholderAPI Integration
+placeholders:
+  # Enable PlaceholderAPI integration
+  enabled: true
+  # Custom placeholders
+  custom-placeholders:
+    - "eregions_region_count"
+    - "eregions_region_list"
+    - "eregions_region_owner"
+    - "eregions_region_members"
+  # Placeholder separators
+  # For region_owners and region_members (who owns/is member of current region)
+  owners-separator: ", "
+  members-separator: ", "
+  # For region_owned and region_membed (regions owned/membered by player)
+  owned-separator: ", "
+  membered-separator: ", "
+###################################################################################
+# Performance Settings
+performance:
+  # Maximum regions to process per tick
+  max-regions-per-tick: 10
+  # Cache region data
+  cache-regions: true
+  # Cache duration in minutes
+  cache-duration: 5
+  # Enable async operations
+  async-operations: true
+###################################################################################
+# Debug settings
+debug-settings:
+  # Log all command executions
+  log-commands: false
+  # Log all trigger executions
+  log-triggers: false
+  # Log all message sending
+  log-messages: false
+  # Log all selection operations
+  log-selections: false
+  # Log all region operations
+  log-regions: false
+  # Log all permission checks
+  log-permissions: false
+  # Log all WorldEdit operations
+  log-worldedit: false
+  # Log all WorldGuard operations
+  log-worldguard: false
+###################################################################################
+# Logging Settings
+logging:
+  # Enable detailed logging
+  detailed-logging: false
+  # Log command executions
+  log-commands: true
+  # Log region operations
+  log-region-operations: true
+  # Log permission checks
+  log-permission-checks: false
+###################################################################################
+# Command Aliases
+aliases:
+  - "ereg"
+  - "erg"
