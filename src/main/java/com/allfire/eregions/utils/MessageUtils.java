@@ -81,27 +81,23 @@ public class MessageUtils {
             }
         } else if (message.startsWith("title;")) {
             // Send as title with custom duration
-            int semicolonIndex = message.indexOf("!");
-            if (semicolonIndex > 0) {
-                String durationStr = message.substring(6, semicolonIndex);
-                message = message.substring(semicolonIndex + 1);
-                try {
-                    int durationSeconds = Integer.parseInt(durationStr);
-                    if (sender instanceof Player) {
-                        sendTitle((Player) sender, message, "", durationSeconds);
-                        return;
-                    }
-                } catch (NumberFormatException e) {
-                    // Invalid duration, fall back to default
-                }
+            if (sender instanceof Player) {
+                parseAndSendTitle((Player) sender, message);
+                return;
             }
         } else if (message.startsWith("title!")) {
             // Send as title (default 1 second)
-            message = message.substring(6);
+            message = message.substring(6).trim();
             if (sender instanceof Player) {
                 // Check for combined title+subtitle format (like CMI)
                 if (message.contains("%subtitle%")) {
                     String[] parts = message.split("%subtitle%", 2);
+                    String title = parts[0].trim();
+                    String subtitle = parts.length > 1 ? parts[1].trim() : "";
+                    sendTitle((Player) sender, title, subtitle, 1);
+                } else if (message.contains("\\n")) {
+                    // Support \n separator like in your example
+                    String[] parts = message.split("\\\\n", 2);
                     String title = parts[0].trim();
                     String subtitle = parts.length > 1 ? parts[1].trim() : "";
                     sendTitle((Player) sender, title, subtitle, 1);
@@ -112,23 +108,13 @@ public class MessageUtils {
             }
         } else if (message.startsWith("subtitle;")) {
             // Send as subtitle with custom duration
-            int semicolonIndex = message.indexOf("!");
-            if (semicolonIndex > 0) {
-                String durationStr = message.substring(9, semicolonIndex);
-                message = message.substring(semicolonIndex + 1);
-                try {
-                    int durationSeconds = Integer.parseInt(durationStr);
-                    if (sender instanceof Player) {
-                        sendTitle((Player) sender, "", message, durationSeconds);
-                        return;
-                    }
-                } catch (NumberFormatException e) {
-                    // Invalid duration, fall back to default
-                }
+            if (sender instanceof Player) {
+                parseAndSendSubtitle((Player) sender, message);
+                return;
             }
         } else if (message.startsWith("subtitle!")) {
             // Send as subtitle (default 1 second)
-            message = message.substring(9);
+            message = message.substring(9).trim();
             if (sender instanceof Player) {
                 sendTitle((Player) sender, "", message, 1);
                 return;
@@ -219,6 +205,121 @@ public class MessageUtils {
         }
     }
     
+    /**
+     * Parse and send title with custom duration
+     * Format: "title;время_секунды! Title\nSubtitle" or "title;время_секунды! Title"
+     * 
+     * @param player Player to send title to
+     * @param message Full message string
+     */
+    private void parseAndSendTitle(Player player, String message) {
+        try {
+            // Format: "title;время_секунды! Title\nSubtitle"
+            // OR: "title;время_секунды! Title" (only title)
+            
+            String content = message.substring("title;".length());
+            
+            int timeSeparator = content.indexOf('!');
+            if (timeSeparator == -1) {
+                if (plugin.getConfigManager().isDebugMode()) {
+                    plugin.getLogger().warning("[DEBUG] Title format error: missing '!' separator");
+                }
+                player.sendMessage("§cОшибка формата: используйте 'title;время! текст'");
+                return;
+            }
+            
+            String timeStr = content.substring(0, timeSeparator).trim();
+            int seconds = Integer.parseInt(timeStr);
+            
+            String titleContent = content.substring(timeSeparator + 1).trim();
+            
+            // Parse title and subtitle
+            String titleText;
+            String subtitleText;
+            
+            // Check for \n separator first
+            int newLineIndex = titleContent.indexOf("\\n");
+            if (newLineIndex != -1) {
+                // Has \n separator - first part is title, second part is subtitle
+                titleText = titleContent.substring(0, newLineIndex).trim();
+                subtitleText = titleContent.substring(newLineIndex + 2).trim(); // +2 because "\n" is 2 characters
+            } else if (titleContent.contains("%subtitle%")) {
+                // Check for %subtitle% separator (CMI compatibility)
+                String[] parts = titleContent.split("%subtitle%", 2);
+                titleText = parts[0].trim();
+                subtitleText = parts.length > 1 ? parts[1].trim() : "";
+            } else {
+                // No separator - only title
+                titleText = titleContent;
+                subtitleText = "";
+            }
+            
+            if (plugin.getConfigManager().isDebugMode()) {
+                plugin.getLogger().info("[DEBUG] Parsed title - Duration: " + seconds + "s, Title: '" + titleText + "', Subtitle: '" + subtitleText + "'");
+            }
+            
+            sendTitle(player, titleText, subtitleText, seconds);
+            
+        } catch (NumberFormatException e) {
+            if (plugin.getConfigManager().isDebugMode()) {
+                plugin.getLogger().warning("[DEBUG] Title time format error: " + e.getMessage());
+            }
+            player.sendMessage("§cОшибка: неверный формат времени в title команде");
+        } catch (Exception e) {
+            if (plugin.getConfigManager().isDebugMode()) {
+                plugin.getLogger().severe("[DEBUG] Title parsing error: " + e.getMessage());
+            }
+            player.sendMessage("§cОшибка при обработке title сообщения");
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Parse and send subtitle with custom duration
+     * Format: "subtitle;время_секунды! Текст подзаголовка"
+     * 
+     * @param player Player to send subtitle to
+     * @param message Full message string
+     */
+    private void parseAndSendSubtitle(Player player, String message) {
+        try {
+            // Format: "subtitle;время_секунды! Текст подзаголовка"
+            String content = message.substring("subtitle;".length());
+            
+            int timeSeparator = content.indexOf('!');
+            if (timeSeparator == -1) {
+                if (plugin.getConfigManager().isDebugMode()) {
+                    plugin.getLogger().warning("[DEBUG] Subtitle format error: missing '!' separator");
+                }
+                player.sendMessage("§cОшибка формата: используйте 'subtitle;время! текст'");
+                return;
+            }
+            
+            String timeStr = content.substring(0, timeSeparator).trim();
+            int seconds = Integer.parseInt(timeStr);
+            String subtitleText = content.substring(timeSeparator + 1).trim();
+            
+            if (plugin.getConfigManager().isDebugMode()) {
+                plugin.getLogger().info("[DEBUG] Parsed subtitle - Duration: " + seconds + "s, Subtitle: '" + subtitleText + "'");
+            }
+            
+            // Send only subtitle (title empty)
+            sendTitle(player, "", subtitleText, seconds);
+            
+        } catch (NumberFormatException e) {
+            if (plugin.getConfigManager().isDebugMode()) {
+                plugin.getLogger().warning("[DEBUG] Subtitle time format error: " + e.getMessage());
+            }
+            player.sendMessage("§cОшибка: неверный формат времени в subtitle команде");
+        } catch (Exception e) {
+            if (plugin.getConfigManager().isDebugMode()) {
+                plugin.getLogger().severe("[DEBUG] Subtitle parsing error: " + e.getMessage());
+            }
+            player.sendMessage("§cОшибка при обработке subtitle сообщения");
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Send title to player with custom duration in seconds
      * 
