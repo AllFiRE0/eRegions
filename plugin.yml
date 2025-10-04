@@ -1,0 +1,21 @@
+# Это файл конфигурации плагина
+# Он говорит серверу, как использовать наш плагин
+
+name: SimplePluginExample  # Название плагина
+version: 1.0.0            # Версия плагина
+main: com.example.simpleplugin.SimplePluginExample  # Главный класс
+author: YourName          # Автор плагина
+description: Простой пример плагина для изучения  # Описание
+
+# Команды, которые добавляет плагин
+commands:
+  hello:                  # Команда /hello
+    description: Приветствует игрока
+    usage: /hello
+    permission: simpleplugin.hello
+
+# Права доступа
+permissions:
+  simpleplugin.hello:
+    description: Позволяет использовать команду hello
+    default: true         # Доступно всем игрокам
