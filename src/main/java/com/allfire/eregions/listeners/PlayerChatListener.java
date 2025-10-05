@@ -97,8 +97,8 @@ public class PlayerChatListener implements Listener {
                 
                 plugin.getMessageUtils().sendMessage(player, "&aРегион &e" + regionName + " &aуспешно создан!");
                 
-                // Remove from waiting for name but keep selection for size/move commands
-                selectionManager.removeWaitingForName(player);
+                // Clear selection completely after successful region creation
+                selectionManager.clearSelection(player);
             } else {
                 // Check if it's due to overlapping regions
                 List<String> overlappingRegions = plugin.getWorldGuardUtils().getOverlappingRegions(
