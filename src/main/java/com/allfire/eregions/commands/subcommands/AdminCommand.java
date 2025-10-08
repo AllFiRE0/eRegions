@@ -36,7 +36,7 @@ public class AdminCommand extends SubCommand {
             if (sender instanceof org.bukkit.entity.Player) {
                 sendUsage((org.bukkit.entity.Player) sender);
             } else {
-                sender.sendMessage("Использование: " + getUsage());
+                plugin.getMessageUtils().sendMessage(sender, "usage-admin");
             }
             return;
         }
@@ -45,14 +45,14 @@ public class AdminCommand extends SubCommand {
         SubCommand subcommand = adminSubcommands.get(subcommandName);
         
         if (subcommand == null) {
-            sendError(sender, "Неизвестная админская команда: " + subcommandName);
-            sendError(sender, "Доступные команды: " + String.join(", ", adminSubcommands.keySet()));
+            plugin.getMessageUtils().sendMessage(sender, "unknown-admin-command", "subcommand", subcommandName);
+            plugin.getMessageUtils().sendMessage(sender, "available-admin-commands", "commands", String.join(", ", adminSubcommands.keySet()));
             return;
         }
         
         // Check permission
         if (!sender.hasPermission(subcommand.getPermission())) {
-            sendError(sender, "У вас нет прав для выполнения команды: " + subcommandName);
+            plugin.getMessageUtils().sendMessage(sender, "no-admin-permission", "subcommand", subcommandName);
             return;
         }
         

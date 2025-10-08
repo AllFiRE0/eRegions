@@ -42,7 +42,7 @@ public class FlagCommand extends SubCommand {
             if (plugin.getConfigManager().isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] FlagCommand: Sender is not a player");
             }
-            sendError(sender, "Эта команда может быть выполнена только игроком!");
+            plugin.getMessageUtils().sendMessage(sender, "player-only-command");
             return;
         }
         
@@ -64,7 +64,7 @@ public class FlagCommand extends SubCommand {
             if (plugin.getConfigManager().isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] FlagCommand: Too many arguments. Expected max 3, got " + args.length);
             }
-            sendError(player, "&cСлишком много аргументов! Использование: /eregion flag <add/remove> <region> <flag>");
+            plugin.getMessageUtils().sendMessage(player, "too-many-arguments-flag");
             sendUsage(player);
             return;
         }
@@ -84,7 +84,7 @@ public class FlagCommand extends SubCommand {
             if (plugin.getConfigManager().isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] FlagCommand: Invalid action detected: '" + action + "'");
             }
-            sendError(player, "&cНеверное действие! Используйте &eadd &cили &eremove&c!");
+            plugin.getMessageUtils().sendMessage(player, "invalid-action-add-remove");
             sendUsage(player);
             return;
         }
@@ -94,7 +94,7 @@ public class FlagCommand extends SubCommand {
             if (plugin.getConfigManager().isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] FlagCommand: Flag name not provided, asking player");
             }
-            sendError(player, "Укажите название флага! Использование: /eregion flag " + action + " " + regionName + " <flag>");
+            plugin.getMessageUtils().sendMessage(player, "flag-name-required", "action", action, "region_name", regionName);
             return;
         }
         
@@ -107,7 +107,7 @@ public class FlagCommand extends SubCommand {
             if (plugin.getConfigManager().isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] FlagCommand: Invalid action: " + action);
             }
-            sendError(player, "Действие должно быть &eadd &cили &eremove&c!");
+            plugin.getMessageUtils().sendMessage(player, "invalid-action-add-remove");
             return;
         }
         
@@ -123,7 +123,7 @@ public class FlagCommand extends SubCommand {
             if (plugin.getConfigManager().isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] FlagCommand: Region " + regionName + " not found");
             }
-            sendError(player, "Регион &e" + regionName + " &cне найден!");
+            plugin.getMessageUtils().sendMessage(player, "region-not-found", "region_name", regionName);
             return;
         }
         
@@ -139,7 +139,7 @@ public class FlagCommand extends SubCommand {
             if (plugin.getConfigManager().isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] FlagCommand: Player " + player.getName() + " is not owner of region " + regionName);
             }
-            sendError(player, "Вы не являетесь владельцем региона &e" + regionName + "&c!");
+            plugin.getMessageUtils().sendMessage(player, "not-region-owner", "region_name", regionName);
             return;
         }
         
@@ -161,7 +161,7 @@ public class FlagCommand extends SubCommand {
             if (plugin.getConfigManager().isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] FlagCommand: Player " + player.getName() + " does not have permission for flag: " + flagName);
             }
-            sendError(player, "У вас нет прав для управления флагом &e" + flagName + "&c!");
+            plugin.getMessageUtils().sendMessage(player, "no-flag-permission", "flag_name", flagName);
             return;
         }
         
@@ -191,7 +191,7 @@ public class FlagCommand extends SubCommand {
                     if (plugin.getConfigManager().isDebugMode()) {
                         plugin.getLogger().info("[DEBUG] FlagCommand: Failed to add flag");
                     }
-                    sendError(player, "Не удалось добавить флаг в регион!");
+                    plugin.getMessageUtils().sendMessage(player, "flag-add-failed");
                 }
             } else {
                 if (plugin.getConfigManager().isDebugMode()) {
@@ -211,14 +211,14 @@ public class FlagCommand extends SubCommand {
                     if (plugin.getConfigManager().isDebugMode()) {
                         plugin.getLogger().info("[DEBUG] FlagCommand: Failed to remove flag");
                     }
-                    sendError(player, "Не удалось удалить флаг из региона!");
+                    plugin.getMessageUtils().sendMessage(player, "flag-remove-failed");
                 }
             }
             
         } catch (Exception e) {
             plugin.getLogger().severe("[DEBUG] FlagCommand: Exception during flag operation: " + e.getMessage());
             e.printStackTrace();
-            sendError(player, "Произошла ошибка при управлении флагами!");
+            plugin.getMessageUtils().sendMessage(player, "flag-management-error");
         }
     }
     

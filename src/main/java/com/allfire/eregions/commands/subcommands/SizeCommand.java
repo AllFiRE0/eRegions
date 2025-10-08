@@ -44,7 +44,7 @@ public class SizeCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            sendError(sender, "Эта команда может быть выполнена только игроком!");
+            plugin.getMessageUtils().sendMessage(sender, "player-only-command");
             return;
         }
         
@@ -60,13 +60,13 @@ public class SizeCommand extends SubCommand {
         
         // Validate direction
         if (!direction.equals("up") && !direction.equals("down") && !direction.equals("face")) {
-            sendError(player, "Направление должно быть &eup&c, &edown &cили &eface&c!");
+            plugin.getMessageUtils().sendMessage(player, "invalid-direction");
             return;
         }
         
         // Validate distance format
         if (!distancePattern.matcher(distanceStr).matches()) {
-            sendError(player, "Неверный формат расстояния! Используйте &e+10 &cили &e-5&c!");
+            plugin.getMessageUtils().sendMessage(player, "invalid-distance-format");
             return;
         }
         
@@ -75,7 +75,7 @@ public class SizeCommand extends SubCommand {
         // Check if player has a completed selection
         SelectionManager.SelectionData selectionData = selectionManager.getActiveSelection(player);
         if (selectionData == null || !selectionData.isCompleted()) {
-            sendError(player, "У вас нет завершенного выделения! Сначала выделите область.");
+            plugin.getMessageUtils().sendMessage(player, "no-complete-selection");
             return;
         }
         
@@ -165,11 +165,11 @@ public class SizeCommand extends SubCommand {
             String point2 = String.format("%.0f,%.0f,%.0f", newPos2.getX(), newPos2.getY(), newPos2.getZ());
             
             commandTriggerManager.executeTrigger("region-resized", player, null, null, null, String.valueOf(Math.abs(distance)), null, null, point1, point2);
-            sendSuccess(player, "Размер выделенной области изменен на &e" + Math.abs(distance) + " &aблоков в направлении &e" + direction + "&a!");
+            plugin.getMessageUtils().sendMessage(player, "selection-resized-success", "distance", String.valueOf(Math.abs(distance)), "direction", direction);
             
         } catch (Exception e) {
             plugin.getLogger().severe("Ошибка при изменении размера выделения: " + e.getMessage());
-            sendError(player, "Произошла ошибка при изменении размера выделения!");
+            plugin.getMessageUtils().sendMessage(player, "selection-resize-error");
         }
     }
     

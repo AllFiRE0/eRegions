@@ -41,7 +41,7 @@ public class MoveCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            sendError(sender, "Эта команда может быть выполнена только игроком!");
+            plugin.getMessageUtils().sendMessage(sender, "player-only-command");
             return;
         }
         
@@ -56,7 +56,7 @@ public class MoveCommand extends SubCommand {
         
         // Validate distance format
         if (!distancePattern.matcher(distanceStr).matches()) {
-            sendError(player, "Неверный формат расстояния! Используйте &e+10 &cили &e-5&c!");
+            plugin.getMessageUtils().sendMessage(player, "invalid-distance-format");
             return;
         }
         
@@ -65,7 +65,7 @@ public class MoveCommand extends SubCommand {
         // Check if player has a completed selection
         SelectionManager.SelectionData selectionData = selectionManager.getActiveSelection(player);
         if (selectionData == null || !selectionData.isCompleted()) {
-            sendError(player, "У вас нет завершенного выделения! Сначала выделите область.");
+            plugin.getMessageUtils().sendMessage(player, "no-complete-selection");
             return;
         }
         
@@ -102,11 +102,11 @@ public class MoveCommand extends SubCommand {
             String point2 = String.format("%.0f,%.0f,%.0f", newPos2.getX(), newPos2.getY(), newPos2.getZ());
             
             commandTriggerManager.executeTrigger("region-moved", player, null, null, null, String.valueOf(Math.abs(distance)), null, null, point1, point2);
-            sendSuccess(player, "Выделенная область перемещена на &e" + Math.abs(distance) + " &aблоков!");
+            plugin.getMessageUtils().sendMessage(player, "selection-moved-success", "distance", String.valueOf(Math.abs(distance)));
             
         } catch (Exception e) {
             plugin.getLogger().severe("Ошибка при перемещении выделения: " + e.getMessage());
-            sendError(player, "Произошла ошибка при перемещении выделения!");
+            plugin.getMessageUtils().sendMessage(player, "selection-move-error");
         }
     }
     

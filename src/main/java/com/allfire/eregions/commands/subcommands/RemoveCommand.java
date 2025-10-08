@@ -34,7 +34,7 @@ public class RemoveCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            sendError(sender, "Эта команда может быть выполнена только игроком!");
+            plugin.getMessageUtils().sendMessage(sender, "player-only-command");
             return;
         }
         
@@ -49,13 +49,13 @@ public class RemoveCommand extends SubCommand {
         
         // Check if region exists
         if (!worldGuardUtils.regionExists(player.getWorld(), regionName)) {
-            sendError(player, "Регион &e" + regionName + " &cне найден!");
+            plugin.getMessageUtils().sendMessage(player, "region-not-found", "region_name", regionName);
             return;
         }
         
         // Check if player is owner of the region
         if (!worldGuardUtils.isRegionOwner(player, regionName)) {
-            sendError(player, "Вы не являетесь владельцем региона &e" + regionName + "&c!");
+            plugin.getMessageUtils().sendMessage(player, "not-region-owner", "region_name", regionName);
             return;
         }
         
@@ -67,14 +67,14 @@ public class RemoveCommand extends SubCommand {
                 // Trigger region removed commands
                 commandTriggerManager.executeTrigger("region-removed", player, regionName);
                 
-                sendSuccess(player, "Регион &e" + regionName + " &aуспешно удален!");
+                plugin.getMessageUtils().sendMessage(player, "region-removed-success", "region_name", regionName);
             } else {
-                sendError(player, "Не удалось удалить регион &e" + regionName + "&c!");
+                plugin.getMessageUtils().sendMessage(player, "region-remove-failed", "region_name", regionName);
             }
             
         } catch (Exception e) {
             plugin.getLogger().severe("Ошибка при удалении региона: " + e.getMessage());
-            sendError(player, "Произошла ошибка при удалении региона!");
+            plugin.getMessageUtils().sendMessage(player, "region-remove-error");
         }
     }
     

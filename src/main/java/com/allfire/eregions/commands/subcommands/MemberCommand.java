@@ -35,7 +35,7 @@ public class MemberCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            sendError(sender, "Эта команда может быть выполнена только игроком!");
+            plugin.getMessageUtils().sendMessage(sender, "player-only-command");
             return;
         }
         
@@ -52,26 +52,26 @@ public class MemberCommand extends SubCommand {
         
         // Validate action
         if (!action.equals("add") && !action.equals("remove")) {
-            sendError(player, "Действие должно быть &eadd &cили &eremove&c!");
+            plugin.getMessageUtils().sendMessage(player, "invalid-action-add-remove");
             return;
         }
         
         // Check if region exists
         if (!worldGuardUtils.regionExists(player.getWorld(), regionName)) {
-            sendError(player, "Регион &e" + regionName + " &cне найден!");
+            plugin.getMessageUtils().sendMessage(player, "region-not-found", "region_name", regionName);
             return;
         }
         
         // Check if player is owner of the region
         if (!worldGuardUtils.isRegionOwner(player, regionName)) {
-            sendError(player, "Вы не являетесь владельцем региона &e" + regionName + "&c!");
+            plugin.getMessageUtils().sendMessage(player, "not-region-owner", "region_name", regionName);
             return;
         }
         
         // Check if target player exists
         Player targetPlayer = Bukkit.getPlayer(targetPlayerName);
         if (targetPlayer == null) {
-            sendError(player, "Игрок &e" + targetPlayerName + " &cне найден!");
+            plugin.getMessageUtils().sendMessage(player, "player-not-found", "player_name", targetPlayerName);
             return;
         }
         
@@ -84,24 +84,24 @@ public class MemberCommand extends SubCommand {
                 
                 if (success) {
                     commandTriggerManager.executeTrigger("member-added", player, regionName, targetPlayerName);
-                    sendSuccess(player, "Игрок &e" + targetPlayerName + " &aстал участником региона &e" + regionName + "&a!");
+                    plugin.getMessageUtils().sendMessage(player, "member-added-success", "player_name", targetPlayerName, "region_name", regionName);
                 } else {
-                    sendError(player, "Не удалось добавить участника в регион!");
+                    plugin.getMessageUtils().sendMessage(player, "member-add-failed");
                 }
             } else {
                 success = worldGuardUtils.removeRegionMember(player.getWorld(), regionName, targetPlayer);
                 
                 if (success) {
                     commandTriggerManager.executeTrigger("member-removed", player, regionName, targetPlayerName);
-                    sendSuccess(player, "Игрок &e" + targetPlayerName + " &aбольше не участник региона &e" + regionName + "&a!");
+                    plugin.getMessageUtils().sendMessage(player, "member-removed-success", "player_name", targetPlayerName, "region_name", regionName);
                 } else {
-                    sendError(player, "Не удалось удалить участника из региона!");
+                    plugin.getMessageUtils().sendMessage(player, "member-remove-failed");
                 }
             }
             
         } catch (Exception e) {
             plugin.getLogger().severe("Ошибка при управлении участниками: " + e.getMessage());
-            sendError(player, "Произошла ошибка при управлении участниками!");
+            plugin.getMessageUtils().sendMessage(player, "member-management-error");
         }
     }
     

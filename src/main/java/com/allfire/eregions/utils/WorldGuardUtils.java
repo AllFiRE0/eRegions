@@ -124,24 +124,35 @@ public class WorldGuardUtils {
                 region.getOwners().addPlayer(owner.getUniqueId());
             }
             
-            // Apply default flags from config
+            // Add region to manager FIRST
+            regions.addRegion(region);
+            
+            // Apply default flags from config AFTER region is added
             List<String> defaultFlags = plugin.getConfigManager().getDefaultFlags();
             for (String flagString : defaultFlags) {
                 String[] parts = flagString.split("=");
                 if (parts.length == 2) {
                     String flagName = parts[0].trim();
-                    String flagValue = parts[1].trim();
+                    String flagValueAndGroup = parts[1].trim();
                     
-                    // Add the flag to region
-                    addRegionFlag(world, regionName, flagName, flagValue);
+                    // Check if flag has group specification (format: value:group)
+                    String flagValue;
+                    String group = null;
+                    if (flagValueAndGroup.contains(":")) {
+                        String[] valueGroupParts = flagValueAndGroup.split(":", 2);
+                        flagValue = valueGroupParts[0].trim();
+                        group = valueGroupParts[1].trim();
+                    } else {
+                        flagValue = flagValueAndGroup;
+                    }
+                    
+                    // Add the flag to region using WorldGuard commands (silent)
+                    setFlagForGroupSilent(world, regionName, flagName, flagValue, group);
                 }
             }
             
-            // Add our custom regionborder-view flag
-            addRegionFlag(world, regionName, "regionborder-view", "allow");
-            
-            // Add region to manager
-            regions.addRegion(region);
+            // Add our custom regionborder-view flag (silent)
+            setFlagForGroupSilent(world, regionName, "regionborder-view", "allow", null);
             
             // Set creator flag
             if (owner != null) {
@@ -523,6 +534,7 @@ public class WorldGuardUtils {
         }
     }
     
+    
     /**
      * Add flag to region
      * 
@@ -533,6 +545,20 @@ public class WorldGuardUtils {
      * @return True if successful
      */
     public boolean addRegionFlag(World world, String regionName, String flagName, String value) {
+        return addRegionFlag(world, regionName, flagName, value, null);
+    }
+    
+    /**
+     * Add flag to region with group specification
+     * 
+     * @param world World
+     * @param regionName Region name
+     * @param flagName Flag name
+     * @param value Flag value
+     * @param group Group name (null for global)
+     * @return True if successful
+     */
+    public boolean addRegionFlag(World world, String regionName, String flagName, String value, String group) {
         try {
             if (!isWorldGuardAvailable()) {
                 return false;
@@ -552,7 +578,7 @@ public class WorldGuardUtils {
 
             Flag<?> flag = WorldGuard.getInstance().getFlagRegistry().get(flagName);
             if (flag == null) {
-                plugin.getLogger().warning("Флаг " + flagName + " не найден!");
+                plugin.getLogger().warning("Флаг " + flagName + " не найден в реестре WorldGuard!");
                 return false;
             }
 
@@ -571,7 +597,13 @@ public class WorldGuardUtils {
                     return false;
                 }
                 
+                // Set flag globally (WorldGuard group-specific flags require different approach)
                 region.setFlag(stateFlag, state);
+                if (group != null && !group.isEmpty()) {
+                    plugin.getLogger().info("Флаг " + flagName + " установлен в " + state + " (группа " + group + " указана, но применяется глобально) в регионе " + regionName);
+                } else {
+                    plugin.getLogger().info("Флаг " + flagName + " установлен в " + state + " глобально в регионе " + regionName);
+                }
             } else if (flagName.equals("regionborder-view")) {
                 // Handle our custom regionborder-view flag
                 plugin.getLogger().info("Устанавливаем кастомный флаг regionborder-view со значением: " + value);
@@ -585,8 +617,14 @@ public class WorldGuardUtils {
                     } else {
                         state = com.sk89q.worldguard.protection.flags.StateFlag.State.DENY;
                     }
+                    
+                    // Set flag globally (WorldGuard group-specific flags require different approach)
                     region.setFlag(regionBorderViewFlag, state);
-                    plugin.getLogger().info("Кастомный флаг regionborder-view установлен: " + state);
+                    if (group != null && !group.isEmpty()) {
+                        plugin.getLogger().info("Кастомный флаг regionborder-view установлен в " + state + " (группа " + group + " указана, но применяется глобально)");
+                    } else {
+                        plugin.getLogger().info("Кастомный флаг regionborder-view установлен в " + state + " глобально");
+                    }
                 } else {
                     plugin.getLogger().warning("Флаг regionborder-view не найден в плагине!");
                 }
@@ -1161,5 +1199,43 @@ public class WorldGuardUtils {
             }
         }
         return regions;
+    }
+    
+    /**
+     * Set flag for specific group using WorldGuard commands (silent)
+     * Used for auto-flags during region creation
+     * 
+     * @param world World
+     * @param regionName Region name
+     * @param flagName Flag name
+     * @param value Flag value
+     * @param group Group name (null for global)
+     * @return True if successful
+     */
+    private boolean setFlagForGroupSilent(World world, String regionName, String flagName, String value, String group) {
+        try {
+            if (!isWorldGuardAvailable()) {
+                return false;
+            }
+            
+            // Use WorldGuard commands with proper formatting
+            String command;
+            if (group == null || group.isEmpty() || group.equalsIgnoreCase("all")) {
+                command = String.format("region flag %s -w %s %s %s", regionName, world.getName(), flagName, value);
+            } else {
+                command = String.format("region flag %s -w %s -g %s %s %s", regionName, world.getName(), group, flagName, value);
+            }
+            
+            // Execute command in main thread
+            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
+            });
+            
+            return true; // Assume success since we can't easily get the result
+            
+        } catch (Exception e) {
+            // Silent failure - don't log errors for auto-flags
+            return false;
+        }
     }
 }

@@ -65,7 +65,7 @@ public class ERegionCommand implements CommandExecutor, TabCompleter {
             if (helpCommand != null) {
                 helpCommand.execute(sender, args);
             } else {
-                plugin.getMessageUtils().sendMessage(sender, "&eИспользуйте /eregion help для получения справки");
+                plugin.getMessageUtils().sendMessage(sender, "usage-help-suggestion");
             }
             return true;
         }
@@ -81,7 +81,7 @@ public class ERegionCommand implements CommandExecutor, TabCompleter {
             if (plugin.getConfigManager().isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] ERegionCommand: Subcommand not found: " + subcommandName);
             }
-            plugin.getMessageUtils().sendMessage(sender, "&cНеизвестная подкоманда: " + subcommandName);
+            plugin.getMessageUtils().sendMessage(sender, "unknown-subcommand-error", "subcommand", subcommandName);
             return true;
         }
         
@@ -97,7 +97,7 @@ public class ERegionCommand implements CommandExecutor, TabCompleter {
             if (plugin.getConfigManager().isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] ERegionCommand: Permission denied for subcommand: " + subcommandName);
             }
-            plugin.getMessageUtils().sendMessage(sender, "&cУ вас нет прав для выполнения этой команды!");
+            plugin.getMessageUtils().sendMessage(sender, "no-permission-error");
             return true;
         }
         

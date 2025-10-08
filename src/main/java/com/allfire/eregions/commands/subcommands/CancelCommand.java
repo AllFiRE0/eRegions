@@ -22,7 +22,7 @@ public class CancelCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Эта команда доступна только игрокам!");
+            plugin.getMessageUtils().sendMessage(sender, "player-only-available-simple");
             return;
         }
         
@@ -33,13 +33,13 @@ public class CancelCommand extends SubCommand {
         boolean isWaitingForName = plugin.getSelectionManager().isWaitingForName(player);
         
         if (!hasActiveSelection && !isWaitingForName) {
-            sendError(player, "У вас нет активного процесса создания региона для отмены!");
+            plugin.getMessageUtils().sendMessage(player, "no-active-selection");
             return;
         }
         
         // Clear selection completely - this will remove from both activeSelections and waitingForName
         plugin.getSelectionManager().clearSelection(player);
-        sendSuccess(player, "Создание региона отменено!");
+        plugin.getMessageUtils().sendMessage(player, "region-cancelled");
     }
     
     @Override

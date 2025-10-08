@@ -23,14 +23,14 @@ public class FlagsCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Эта команда доступна только игрокам!");
+            plugin.getMessageUtils().sendMessage(sender, "player-only-available-simple");
             return;
         }
 
         Player player = (Player) sender;
 
         if (args.length < 1) {
-            sendError(player, "Использование: /eregion flags <region_name>");
+            plugin.getMessageUtils().sendMessage(player, "usage-flags");
             return;
         }
 
@@ -39,7 +39,7 @@ public class FlagsCommand extends SubCommand {
 
         // Check if player owns the region
         if (!worldGuardUtils.isRegionOwner(player, regionName)) {
-            sendError(player, "Вы не владеете регионом " + regionName + "!");
+            plugin.getMessageUtils().sendMessage(player, "not-region-owner-simple", "region_name", regionName);
             return;
         }
 
@@ -47,7 +47,7 @@ public class FlagsCommand extends SubCommand {
         List<String> flags = worldGuardUtils.getRegionFlags(player.getWorld(), regionName);
         
         if (flags.isEmpty()) {
-            sendSuccess(player, "У региона " + regionName + " нет флагов.");
+            plugin.getMessageUtils().sendMessage(player, "region-no-flags", "region_name", regionName);
             return;
         }
 

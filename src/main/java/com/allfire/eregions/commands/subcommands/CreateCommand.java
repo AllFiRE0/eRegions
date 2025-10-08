@@ -41,7 +41,7 @@ public class CreateCommand extends SubCommand {
             if (plugin.getConfigManager().isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] CreateCommand: Sender is not a player");
             }
-            sendError(sender, "Эта команда может быть выполнена только игроком!");
+            plugin.getMessageUtils().sendMessage(sender, "player-only-command");
             return;
         }
         
@@ -67,7 +67,7 @@ public class CreateCommand extends SubCommand {
             if (plugin.getConfigManager().isDebugMode()) {
                 plugin.getLogger().info("[DEBUG] CreateCommand: Player already has active selection or is waiting for name, aborting");
             }
-            sendError(player, "У вас уже есть активное создание региона! Завершите его или отмените командой /eregion cancel");
+            plugin.getMessageUtils().sendMessage(player, "active-selection-exists");
             return;
         }
         
@@ -89,7 +89,7 @@ public class CreateCommand extends SubCommand {
                 plugin.getLogger().severe("[DEBUG] CreateCommand: Error starting selection: " + e.getMessage());
             }
             e.printStackTrace();
-            sendError(player, "Ошибка при запуске выделения!");
+            plugin.getMessageUtils().sendMessage(player, "selection-start-error");
             return;
         }
         

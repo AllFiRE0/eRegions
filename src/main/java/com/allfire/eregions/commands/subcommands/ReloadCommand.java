@@ -28,11 +28,11 @@ public class ReloadCommand extends SubCommand {
             // Reload plugin configuration
             plugin.reloadPlugin();
             
-            sendSuccess(sender, "Конфигурация плагина успешно перезагружена!");
+            plugin.getMessageUtils().sendMessage(sender, "config-reloaded-success");
             
         } catch (Exception e) {
             plugin.getLogger().severe("Ошибка при перезагрузке конфигурации: " + e.getMessage());
-            sendError(sender, "Произошла ошибка при перезагрузке конфигурации!");
+            plugin.getMessageUtils().sendMessage(sender, "config-reload-error");
         }
     }
     

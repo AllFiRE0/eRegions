@@ -60,7 +60,7 @@ public class PlayerChatListener implements Listener {
             // Check for cancellation
             if (regionName.equalsIgnoreCase("отмена") || regionName.equalsIgnoreCase("cancel") || 
                 regionName.equalsIgnoreCase("нет") || regionName.equalsIgnoreCase("no")) {
-                plugin.getMessageUtils().sendMessage(player, "&cСоздание региона отменено!");
+                plugin.getMessageUtils().sendMessage(player, "region-creation-cancelled-chat");
                 // Clear selection completely - this will remove from both activeSelections and waitingForName
                 selectionManager.clearSelection(player);
                 return;
@@ -68,18 +68,18 @@ public class PlayerChatListener implements Listener {
             
             // Validate region name
             if (regionName.isEmpty()) {
-                plugin.getMessageUtils().sendMessage(player, "&cНазвание региона не может быть пустым!");
+                plugin.getMessageUtils().sendMessage(player, "region-name-empty");
                 return;
             }
             
             if (regionName.length() > 32) {
-                plugin.getMessageUtils().sendMessage(player, "&cНазвание региона не может быть длиннее 32 символов!");
+                plugin.getMessageUtils().sendMessage(player, "region-name-too-long");
                 return;
             }
             
             // Check if region name contains only valid characters
             if (!regionName.matches("^[a-zA-Z0-9_-]+$")) {
-                plugin.getMessageUtils().sendMessage(player, "&cНазвание региона может содержать только буквы, цифры, дефисы и подчеркивания!");
+                plugin.getMessageUtils().sendMessage(player, "region-name-invalid-chars");
                 return;
             }
             
@@ -95,10 +95,16 @@ public class PlayerChatListener implements Listener {
                 // Trigger region created commands
                 commandTriggerManager.executeTrigger("region-created", player, regionName);
                 
-                plugin.getMessageUtils().sendMessage(player, "&aРегион &e" + regionName + " &aуспешно создан!");
+                plugin.getMessageUtils().sendMessage(player, "region-created-success-direct", "region_name", regionName);
                 
                 // Remove from waiting for name but keep selection for size/move commands
                 selectionManager.removeWaitingForName(player);
+                
+                // Automatically execute /eregion cancel command for the player in main thread
+                // This will clear the selection state but keep WorldEdit selection for /svis
+                plugin.getServer().getScheduler().runTask(plugin, () -> {
+                    plugin.getServer().dispatchCommand(player, "eregion cancel");
+                });
             } else {
                 // Check if it's due to overlapping regions
                 List<String> overlappingRegions = plugin.getWorldGuardUtils().getOverlappingRegions(
@@ -108,9 +114,9 @@ public class PlayerChatListener implements Listener {
                 );
                 
                 if (!overlappingRegions.isEmpty()) {
-                    plugin.getMessageUtils().sendMessage(player, "&cВыделенная область пересекается с существующими регионами: &e" + String.join(", ", overlappingRegions) + "&c!");
+                    plugin.getMessageUtils().sendMessage(player, "region-overlapping-direct", "overlapping_regions", String.join(", ", overlappingRegions));
                 } else {
-                    plugin.getMessageUtils().sendMessage(player, "&cОшибка при создании региона &e" + regionName + "&c!");
+                    plugin.getMessageUtils().sendMessage(player, "region-creation-failed-direct", "region_name", regionName);
                 }
             }
             

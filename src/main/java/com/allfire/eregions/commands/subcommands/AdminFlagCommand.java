@@ -49,7 +49,7 @@ public class AdminFlagCommand extends SubCommand {
             if (sender instanceof Player) {
                 sendUsage((Player) sender);
             } else {
-                sender.sendMessage("Использование: " + getUsage());
+                plugin.getMessageUtils().sendMessage(sender, "usage-admin-flag");
             }
             return;
         }
@@ -93,7 +93,7 @@ public class AdminFlagCommand extends SubCommand {
         List<String> validGroups = Arrays.asList("all", "members", "owners", "nonmembers", "nonowners");
         for (String group : groups) {
             if (!validGroups.contains(group.toLowerCase())) {
-                sendError(sender, "Неверная группа: " + group + ". Доступные: " + String.join(", ", validGroups));
+                plugin.getMessageUtils().sendMessage(sender, "invalid-group", "group", group, "valid_groups", String.join(", ", validGroups));
                 return;
             }
         }
@@ -108,7 +108,7 @@ public class AdminFlagCommand extends SubCommand {
         
         // Check if region exists
         if (!worldGuardUtils.regionExists(world, regionName)) {
-            sendError(sender, "Регион " + regionName + " не найден в мире " + world.getName() + "!");
+            plugin.getMessageUtils().sendMessage(sender, "region-not-found-world", "region_name", regionName, "world_name", world.getName());
             return;
         }
         
@@ -125,10 +125,10 @@ public class AdminFlagCommand extends SubCommand {
         
         if (success) {
             if (!silent) {
-                sendSuccess(sender, "Флаг &e" + flagName + " &aустановлен в значение &e" + value + " &aдля групп &e" + String.join(", ", groups) + " &aв регионе &e" + regionName + "&a!");
+                plugin.getMessageUtils().sendMessage(sender, "admin-flag-set-success", "flag_name", flagName, "value", value, "groups", String.join(", ", groups), "region_name", regionName);
             }
         } else {
-            sendError(sender, "Ошибка при установке флага!");
+            plugin.getMessageUtils().sendMessage(sender, "admin-flag-set-error");
         }
     }
     

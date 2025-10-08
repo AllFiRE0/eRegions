@@ -83,7 +83,7 @@ public abstract class SubCommand {
      * @param player Player
      */
     protected void sendUsage(Player player) {
-        plugin.getMessageUtils().sendMessage(player, "&eИспользование: " + usage);
+        plugin.getMessageUtils().sendMessage(player, "usage-command", "usage", usage);
     }
     
     // Getters
